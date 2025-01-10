@@ -48,6 +48,7 @@ public class Main {
         bossAttack();
         heroesAttack();
         printStatistics();
+        healing();
     }
 
     public static void chooseBossDefence() {
@@ -74,26 +75,26 @@ public class Main {
             }
         }
     }
-    public static void Healing() {
+    public static void healing() {
         int healing = 80;
         for (int i = 0; i < heroesHealth.length; i++) {
-            if (heroesHealth[i] < 100 && heroesHealth[i] > 0 && i !=4 && heroesAttackType[i] != heroesAttackType[4]) {
+            if (heroesHealth[i] < 100 && heroesHealth[i] > 0 && i !=3) {
                 heroesHealth[i] += healing;
-                if (heroesHealth[i] > 100) {
-                    heroesHealth[i] = 100;
-                }
             }
-            System.out.println(heroesAttackType[4] + "Исцеленный герой! увеличенный едю здоровья на:" + heroesHealth[i]);
-
-
+            System.out.println(heroesAttackType[i] + " Исцеленный герой! увеличенный ед. здоровья на:" + healing);
+            break;
         }
 
     }
 
 
-
     public static void bossAttack() {
+        Random random = new Random();
         for (int i = 0; i < heroesHealth.length; i++) {
+            if (i == 4 && 0 == random.nextInt(4)) {
+                System.out.println("Lucky is dodged!");
+                continue;
+            }
             if (heroesHealth[i] > 0) {
                 if (heroesHealth[i] - bossDamage < 0) {
                     heroesHealth[i] = 0;
