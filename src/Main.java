@@ -4,12 +4,12 @@ public class Main {
 
 
 
-    public static int bossHealth = 700;
+    public static int bossHealth = 1000;
     public static int bossDamage = 50;
     public static String bossDefence;
-    public static String[] heroesAttackType = {"Physical", "Magical", "Kinetic", "Medic", "Lucky"};
-    public static int[] heroesHealth = {280, 270, 260, 250, 240};
-    public static int[] heroesDamage = {20, 10, 15, 8, 12};
+    public static String[] heroesAttackType = {"Physical", "Magical", "Kinetic", "Medic", "Lucky", "Golem", "Witcher", "Thor"};
+    public static int[] heroesHealth = {280, 270, 260, 250, 240, 350, 245, 255};
+    public static int[] heroesDamage = {20, 10, 15, 8, 12, 5, 18, 12};
     public static int roundNumber;
 
 
@@ -49,6 +49,9 @@ public class Main {
         heroesAttack();
         printStatistics();
         healing();
+        golemTakesDamage();
+
+
     }
 
     public static void chooseBossDefence() {
@@ -75,8 +78,11 @@ public class Main {
             }
         }
     }
-    public static void healing() {
+    public static int healing() {
         int healing = 80;
+        if (heroesHealth[3] <= 0) {
+            return 0;
+        }
         for (int i = 0; i < heroesHealth.length; i++) {
             if (heroesHealth[i] < 100 && heroesHealth[i] > 0 && i !=3) {
                 heroesHealth[i] += healing;
@@ -84,17 +90,17 @@ public class Main {
             System.out.println(heroesAttackType[i] + " Исцеленный герой! увеличенный ед. здоровья на:" + healing);
             break;
         }
-
+        return 0;
     }
-
 
     public static void bossAttack() {
         Random random = new Random();
         for (int i = 0; i < heroesHealth.length; i++) {
             if (i == 4 && 0 == random.nextInt(4)) {
-                System.out.println("Lucky is dodged!");
+                System.out.println("Lucky is dodged 25%!");
                 continue;
             }
+
             if (heroesHealth[i] > 0) {
                 if (heroesHealth[i] - bossDamage < 0) {
                     heroesHealth[i] = 0;
@@ -102,6 +108,15 @@ public class Main {
                     heroesHealth[i] = heroesHealth[i] - bossDamage;
                 }
             }
+        }
+    }
+
+    public static void golemTakesDamage() {
+        if (heroesHealth[5] > 0 && bossHealth > 0) {
+            int damage = bossDamage / 5;
+            heroesHealth[5] -= damage;
+            bossDamage -= healing();
+            System.out.println(heroesAttackType[5] + " took 20% of damage from his allies!");
         }
     }
 
