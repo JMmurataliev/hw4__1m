@@ -4,13 +4,13 @@ public class Main {
 
 
 
-    public static int bossHealth = 1000;
+    public static int bossHealth = 1300;
     public static int bossDamage = 50;
     public static String bossDefence;
     public static String[] heroesAttackType = {"Physical", "Magical", "Kinetic", "Medic", "Lucky", "Golem", "Witcher", "Thor"};
     public static int[] heroesHealth = {280, 270, 260, 250, 240, 350, 245, 255};
     public static int[] heroesDamage = {20, 10, 15, 8, 12, 5, 18, 12};
-    public static int roundNumber;
+    public static int roundNumber = 0;
 
 
 
@@ -49,7 +49,20 @@ public class Main {
         heroesAttack();
         printStatistics();
         healing();
-        golemTakesDamage();
+        thorStunnedBoss();
+
+
+        if (heroesHealth[6] > 0) {
+            for (int i = 0; i < heroesAttackType.length; i++) {
+                if (heroesHealth[i] == 0) {
+                    heroesHealth [i] = heroesHealth[6];
+                    heroesHealth[6] = 0;
+                    System.out.println("The Witcher gave his life to " + heroesAttackType[i]);
+                    break;
+                }
+            }
+        }
+
 
 
     }
@@ -93,32 +106,46 @@ public class Main {
         return 0;
     }
 
+
     public static void bossAttack() {
         Random random = new Random();
+        int damageGolem = 0;
         for (int i = 0; i < heroesHealth.length; i++) {
+
             if (i == 4 && 0 == random.nextInt(4)) {
                 System.out.println("Lucky is dodged 25%!");
                 continue;
             }
 
+            int damage = bossDamage;
+            if (heroesHealth[5] > 0 && !heroesAttackType[i].equals(heroesAttackType[5])) {
+                int take = Math.min(bossDamage / 5, heroesHealth[5]);
+                heroesHealth[5] -= take;
+                damageGolem += take;
+                damage -= take;
+            }
+
             if (heroesHealth[i] > 0) {
-                if (heroesHealth[i] - bossDamage < 0) {
+                if (heroesHealth[i] - damage < 0) {
                     heroesHealth[i] = 0;
                 } else {
-                    heroesHealth[i] = heroesHealth[i] - bossDamage;
+                    heroesHealth[i] = heroesHealth[i] - damage;
                 }
             }
         }
+        System.out.println("Golem takes 1/5 of the damage coming from the boss to other players. - "  + damageGolem);
     }
-
-    public static void golemTakesDamage() {
-        if (heroesHealth[5] > 0 && bossHealth > 0) {
-            int damage = bossDamage / 5;
-            heroesHealth[5] -= damage;
-            bossDamage -= healing();
-            System.out.println(heroesAttackType[5] + " took 20% of damage from his allies!");
+    public static void thorStunnedBoss() {
+        Random thor = new Random();
+        boolean stun = thor.nextBoolean();
+        if (stun) {
+            bossDamage=0;
+            System.out.println(heroesAttackType[7] + " stunned Boss");
+        }else{
+            bossDamage=50;
         }
     }
+
 
     public static void printStatistics() {
         System.out.println("ROUND: " + roundNumber + " -----------------");
